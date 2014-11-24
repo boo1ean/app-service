@@ -2,7 +2,7 @@
 
 Part of app-helpers project.
 
-Simple wire up app-validation with handlers through naming conventions.
+Simple wiring up of app-validation with service methods through naming conventions.
 
 ## Installation
 
