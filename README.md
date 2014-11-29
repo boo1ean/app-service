@@ -19,7 +19,7 @@ function before () {
 	console.log('before');
 }
 
-function validation () {
+function validateUsefulMethod () {
 	console.log('validate');
 }
 
@@ -32,7 +32,7 @@ function after () {
 }
 
 var methods = { usefulMethod: usefulMethod };
-var validation = { usefulMethod: validate };
+var validation = { usefulMethod: validateUsefulMethod };
 
 var service = s({
 	methods: methods,
@@ -41,11 +41,15 @@ var service = s({
 	after: after
 });
 
-service.usefulMethod();
+service.usefulMethod().then(function () {
+	console.log('done');
+});
+
 // before
 // validation
 // useful method
 // after
+// done
 ```
 
 todo
