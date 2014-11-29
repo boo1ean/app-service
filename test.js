@@ -114,4 +114,8 @@ describe('Service composer', function () {
 			done();
 		});
 	});
+
+	it('method should return promise', function (done) {
+		s({ methods: { test: function() {} }}).test().then(done);
+	});
 });

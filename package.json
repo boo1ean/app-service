@@ -13,9 +13,9 @@
   "keywords": [
     "app-helpers",
     "app-validation",
-    'service',
-    'decorator',
-    'decoration'
+    "service",
+    "decorator",
+    "decoration"
   ],
   "author": "Egor Gumenyuk <boo1ean0807@gmail.com>",
   "license": "MIT",
