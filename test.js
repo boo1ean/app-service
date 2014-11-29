@@ -16,7 +16,7 @@ describe('Service composer', function () {
 			test: method
 		};
 
-		var service = s(methods, validation);
+		var service = s({ methods: methods, validation: validation});
 
 		var data = { hello: 'world' };
 
@@ -43,7 +43,7 @@ describe('Service composer', function () {
 			test: method
 		};
 
-		var service = s(methods, validation);
+		var service = s({ methods: methods, validation: validation});
 
 		var data = { hello: 'world' };
 
@@ -57,5 +57,61 @@ describe('Service composer', function () {
 
 			done();
 		});
-	})
+	});
+
+	it('should call before, validation, after', function (done) {
+		var calls = [];
+
+		var d = {
+			data: [1, 2, 3],
+			a: 5
+		};
+
+		var d1 = {
+			q: [1, 2, 5, 6, 3],
+			z: 18
+		};
+
+		var ctx = { k: 1, t: 3};
+
+		function before (dd, dd1) {
+			d.should.be.eql(dd);
+			d1.should.be.eql(dd1);
+			ctx.should.be.eql(this);
+			calls.push('before');
+		}
+
+		function validate (dd, dd1) {
+			d.should.be.eql(dd);
+			d1.should.be.eql(dd1);
+			ctx.should.be.eql(this);
+			calls.push('validate');
+		}
+
+		function test (dd, dd1) {
+			d.should.be.eql(dd);
+			d1.should.be.eql(dd1);
+			ctx.should.be.eql(this);
+			calls.push('test');
+		}
+
+		function after (dd, dd1) {
+			d.should.be.eql(dd);
+			d1.should.be.eql(dd1);
+			ctx.should.be.eql(this);
+			calls.push('after');
+		}
+
+		var service = s({
+			methods: { test: test },
+			validation: { test: validate },
+			before: before,
+			after: after
+		});
+
+		service.test.call(ctx, d, d1).then(function () {
+			calls.should.be.eql(['before', 'validate', 'test', 'after']);
+			done();
+		});
+	});
 });
