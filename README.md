@@ -12,39 +12,43 @@ npm install app-service
 
 ## Usage
 
-When using app-service there is convention that service methods always take data object as first argument.
+Validate function should has same name in validation object as target method.
 
 ```javascript
-// Users service
+function before () {
+	console.log('before');
+}
 
-var v = require('app-validation');
-var s = require('app-service');
-var users = require('../storage/users');
+function validation () {
+	console.log('validate');
+}
 
-var validation = {
-	create: v({
-		email: ['required', 'email'],
-		password: ['required', 'strong password']
-	})
-};
+function usefulMethod () {
+	console.log('useful method');
+}
 
-var service = {
-	create: function create (data) {
-		return users.create(data);
-	}
-};
+function after () {
+	console.log('after');
+}
 
-module.exports = s(service, validation);
+var methods = { usefulMethod: usefulMethod };
+var validation = { usefulMethod: validate };
+
+var service = s({
+	methods: methods,
+	validation: validation,
+	before: before,
+	after: after
+});
+
+service.usefulMethod();
+// before
+// validation
+// useful method
+// after
 ```
 
-And now use the service
-
-```javascript
-var users = require('./services/users');
-users.create({ email: 'sample@example.com', password: 'test', password_repeat: 'test' });
-```
-
-User service's create method will be executed only if input data object passes `create` validator
+todo
 
 ## LICENSE
 MIT
