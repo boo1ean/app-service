@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/boo1ean/app-service",
   "dependencies": {
+    "bluebird": "^2.3.11",
     "lodash": "^2.4.1"
   },
   "devDependencies": {
