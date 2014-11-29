@@ -1,7 +1,7 @@
 {
   "name": "app-service",
-  "version": "0.1.0",
-  "description": "Semantic wiring up of app-validation and actual service methods",
+  "version": "0.2.0",
+  "description": "Object methods decoration",
   "main": "index.js",
   "scripts": {
     "test": "mocha"
@@ -12,7 +12,10 @@
   },
   "keywords": [
     "app-helpers",
-    "app-validation"
+    "app-validation",
+    'service',
+    'decorator',
+    'decoration'
   ],
   "author": "Egor Gumenyuk <boo1ean0807@gmail.com>",
   "license": "MIT",
