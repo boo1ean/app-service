@@ -62,3 +62,4 @@ function compose (opts) {
 }
 
 module.exports = compose;
+module.exports.configure = configure;
