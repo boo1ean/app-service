@@ -38,8 +38,10 @@ function compose (opts) {
 
 		return function serviceMethod () {
 			var returnValue;
-			var self = this;
+			var self = _.clone(this);
 			var args = arguments;
+
+			self.methodName = methodName;
 
 			return Promise.method(before).apply(self, args)
 				.then(function () {

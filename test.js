@@ -74,31 +74,33 @@ describe('Service composer', function () {
 
 		var ctx = { k: 1, t: 3};
 
+		var expectedCtx = { k: 1, t: 3, methodName: 'test' };
+
 		function before (dd, dd1) {
 			d.should.be.eql(dd);
 			d1.should.be.eql(dd1);
-			ctx.should.be.eql(this);
+			this.should.be.eql(expectedCtx);
 			calls.push('before');
 		}
 
 		function validate (dd, dd1) {
 			d.should.be.eql(dd);
 			d1.should.be.eql(dd1);
-			ctx.should.be.eql(this);
+			this.should.be.eql(expectedCtx);
 			calls.push('validate');
 		}
 
 		function test (dd, dd1) {
 			d.should.be.eql(dd);
 			d1.should.be.eql(dd1);
-			ctx.should.be.eql(this);
+			this.should.be.eql(expectedCtx);
 			calls.push('test');
 		}
 
 		function after (dd, dd1) {
 			d.should.be.eql(dd);
 			d1.should.be.eql(dd1);
-			ctx.should.be.eql(this);
+			this.should.be.eql(expectedCtx);
 			calls.push('after');
 		}
 
