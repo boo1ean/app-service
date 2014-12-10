@@ -74,7 +74,7 @@ describe('Service composer', function () {
 
 		var ctx = { k: 1, t: 3};
 
-		var expectedCtx = { k: 1, t: 3, methodName: 'test' };
+		var expectedCtx = { k: 1, t: 3, methodName: 'test', serviceName: 'my-service' };
 
 		function before (dd, dd1) {
 			d.should.be.eql(dd);
@@ -108,7 +108,8 @@ describe('Service composer', function () {
 			methods: { test: test },
 			validation: { test: validate },
 			before: before,
-			after: after
+			after: after,
+			name: 'my-service'
 		});
 
 		service.test.call(ctx, d, d1).then(function () {

@@ -29,6 +29,7 @@ function compose (opts) {
 
 	_.defaults(opts, defaults);
 
+	var serviceName = opts.name || 'service';
 	var before = _.isFunction(opts.before) ? opts.before : noop;
 	var after = _.isFunction(opts.after) ? opts.after : noop;
 	var validation = _.isObject(opts.validation) ? opts.validation : {};
@@ -42,6 +43,7 @@ function compose (opts) {
 			var args = arguments;
 
 			self.methodName = methodName;
+			self.serviceName = serviceName;
 
 			return Promise.method(before).apply(self, args)
 				.then(function () {
