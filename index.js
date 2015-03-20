@@ -1,67 +1,47 @@
 var _ = require('lodash');
 var Promise = require('bluebird');
 
-var defaults = {
-	methods: null,
-	validation: null,
-	before: null,
-	after: null
-};
+function Service (methods, validation, transforms) {
+	_.mapValues(methods, buildMethod, this);
 
-function noop () {}
+	function buildMethod(method, methodName) {
+		var transform = _.isFunction(transforms[methodName]) ? transforms[methodName] : _.identity;
+		var validate  = _.isFunction(validation[methodName]) ? validation[methodName] : _.identity;
 
-function configure (opts) {
-	if (!_.isObject(opts)) {
-		throw new Error('Service configuration should be an object');
-	}
+		this[methodName] = function serviceMethod () {
+			var args = Array.prototype.slice.apply(arguments);
 
-	defaults = _.extend(defaults, opts);
-}
+			// By convetion first argument of service method is always params object
+			// Params transform
+			args[0] = transform(args[0]);
 
-function compose (opts) {
-	if (!_.isObject(opts)) {
-		throw new Error('Service configuration should be an object');
-	}
-
-	if (!_.isObject(opts.methods)) {
-		throw new Error('Service methods should be an object');
-	}
-
-	_.defaults(opts, defaults);
-
-	var serviceName = opts.name || 'service';
-	var before = _.isFunction(opts.before) ? opts.before : noop;
-	var after = _.isFunction(opts.after) ? opts.after : noop;
-	var validation = _.isObject(opts.validation) ? opts.validation : {};
-
-	return _.mapValues(opts.methods, function forEachServiceMethod (method, methodName) {
-		var validator = validation[methodName] || noop;
-
-		return function serviceMethod () {
-			var returnValue;
-			var self = _.clone(this);
-			var args = arguments;
-
-			self.methodName = methodName;
-			self.serviceName = serviceName;
-
-			return Promise.method(before).apply(self, args)
-				.then(function () {
-					return validator.apply(self, args);
-				})
-				.then(function () {
-					return method.apply(self, args);
-				})
-				.then(function (result) {
-					returnValue = result;
-					return after.apply(self, args);
-				})
-				.then(function () {
-					return returnValue;
-				});
+			return Promise
+				.resolve(validate(args[0]))
+				.return(args)
+				.spread(method);
 		};
-	});
+	}
+
 }
 
-module.exports = compose;
-module.exports.configure = configure;
+function buildService (opts) {
+	if (!_.isObject(opts.methods)) {
+		throw new Error('Service methods should be object');
+	}
+
+	if (opts.validation && !_.isObject(opts.validation)) {
+		throw new Error('Service validation should be object');
+	}
+
+	if (opts.transforms && !_.isObject(opts.transforms)) {
+		throw new Error('Service transforms should be object');
+	}
+
+	return new Service(
+		opts.methods,
+		opts.validation || {},
+		opts.transformas || {}
+	);
+}
+
+module.exports = buildService;
