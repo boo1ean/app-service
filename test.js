@@ -5,7 +5,11 @@ var should = require('should');
 
 describe('Service composer', function () {
 	it('should compose service and validation functions', function (done) {
+		var data = { hello: 'world' };
+		var data2 = { beep: 'boop' };
+
 		var validator = sinon.stub().returns(Promise.resolve());
+		var transform = sinon.stub().returns(data2);
 		var method = sinon.spy();
 
 		var validation = {
@@ -16,16 +20,24 @@ describe('Service composer', function () {
 			test: method
 		};
 
-		var service = s({ methods: methods, validation: validation});
+		var transforms = {
+			test: transform
+		};
 
-		var data = { hello: 'world' };
+		var service = s({
+			methods: methods,
+			validation: validation,
+			transforms: transforms
+		});
 
 		service.test(data).then(function () {
 			method.calledOnce.should.be.ok;
 			validator.calledOnce.should.be.ok;
+			transform.calledOnce.should.be.ok;
 
-			method.calledWith(data).should.be.ok;
-			validator.calledWith(data).should.be.ok;
+			method.calledWith(data2).should.be.ok;
+			validator.calledWith(data2).should.be.ok;
+			transform.calledWith(data).should.be.ok;
 
 			done();
 		});
