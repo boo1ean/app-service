@@ -40,7 +40,7 @@ function buildService (opts) {
 	return new Service(
 		opts.methods,
 		opts.validation || {},
-		opts.transformas || {}
+		opts.transforms || {}
 	);
 }
 
