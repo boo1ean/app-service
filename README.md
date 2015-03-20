@@ -1,8 +1,6 @@
 ## app-service
 
-Part of app-helpers project.
-
-Simple wiring up of app-validation with service methods through naming conventions.
+Compose transforming, validation and actual service methods in a strict pipeline
 
 ## Installation
 
@@ -12,47 +10,50 @@ npm install app-service
 
 ## Usage
 
-Validate function should has same name in validation object as target method.
+Define transform, validate function and actual method and wire up it through app-service
 
-```javascript
-function before () {
-	console.log('before');
+```js
+var build = require('app-service');
+
+function transformCreateUser (params) {
+	console.log('transform', params);
+
+	params.email = params.email.toLowerCase();
+	return params;
 }
 
-function validateUsefulMethod () {
-	console.log('validate');
+function validateCreateUser (params) {
+	console.log('validate', params):
+
+	if (params.email.length > 100) {
+		throw new Error('Email is toooo long');
+	}
 }
 
-function usefulMethod () {
-	console.log('useful method');
+function createUser (params) {
+	console.log(params);
+	return 'got it!';
 }
 
-function after () {
-	console.log('after');
-}
-
-var methods = { usefulMethod: usefulMethod };
-var validation = { usefulMethod: validateUsefulMethod };
-
-var service = s({
-	methods: methods,
-	validation: validation,
-	before: before,
-	after: after
+var service = build({
+	methods: { createUser: createUser },
+	validation: { createUser: validateCreateUser },
+	transforms: { createUser: transformCreateUser }
 });
 
-service.usefulMethod().then(function () {
-	console.log('done');
+service.createUser({ email: 'Johny.Dust@example.com' }).then(function (result) {
+	console.log(result);
 });
-
-// before
-// validation
-// useful method
-// after
-// done
 ```
 
-todo
+outputs:
+
+```
+transform { email: 'Johny.Dust@example.com' }
+validate { email: 'johny.dust@example.com' }
+{ email: 'johny.dust@example.com' }
+got it!
+```
 
 ## LICENSE
 MIT
