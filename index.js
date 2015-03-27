@@ -2,13 +2,14 @@ var _ = require('lodash');
 var Promise = require('bluebird');
 
 function Service (methods, validation, transforms) {
-	_.mapValues(methods, buildMethod, this);
+	var self = this;
+	_.mapValues(methods, buildMethod, self);
 
 	function buildMethod(method, methodName) {
 		var transform = _.isFunction(transforms[methodName]) ? transforms[methodName] : _.identity;
 		var validate  = _.isFunction(validation[methodName]) ? validation[methodName] : _.identity;
 
-		this[methodName] = function serviceMethod () {
+		self[methodName] = function serviceMethod () {
 			var args = Array.prototype.slice.apply(arguments);
 
 			// By convetion first argument of service method is always params object
@@ -18,7 +19,7 @@ function Service (methods, validation, transforms) {
 			return Promise
 				.resolve(validate(args[0]))
 				.return(args)
-				.spread(method);
+				.spread(method.bind(self));
 		};
 	}
 
